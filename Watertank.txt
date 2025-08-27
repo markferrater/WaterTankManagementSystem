@@ -1,0 +1,147 @@
+import javax.swing.JOptionPane;
+
+// Abstract class
+abstract class WaterTank {
+    protected int capacity;
+    protected int currentLevel;
+
+    public WaterTank(int capacity) {
+        this.capacity = capacity;
+        this.currentLevel = 0;
+    }
+
+    public abstract void fillTank(int liters);
+    public abstract void useWater(int liters);
+    public abstract String checkStatus();
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+}
+
+// Subclass: HomeTank
+class HomeTank extends WaterTank {
+    public HomeTank() {
+        super(200); // 200 liters
+    }
+
+    @Override
+    public void fillTank(int liters) {
+        if (currentLevel + liters >= capacity) {
+            currentLevel = capacity;
+        } else {
+            currentLevel += liters;
+        }
+        JOptionPane.showMessageDialog(null, liters + " liters added. Current level: " + currentLevel + "/" + capacity);
+    }
+
+    @Override
+    public void useWater(int liters) {
+        if (currentLevel - liters <= 0) {
+            currentLevel = 0;
+        } else {
+            currentLevel -= liters;
+        }
+        JOptionPane.showMessageDialog(null, liters + " liters used. Current level: " + currentLevel + "/" + capacity);
+    }
+
+    @Override
+    public String checkStatus() {
+        if (currentLevel == 0) return "Empty";
+        else if (currentLevel == capacity) return "Full";
+        else return "In Use";
+    }
+}
+
+// Subclass: BuildingTank
+class BuildingTank extends WaterTank {
+    public BuildingTank() {
+        super(1000); // 1000 liters
+    }
+
+    @Override
+    public void fillTank(int liters) {
+        if (currentLevel + liters >= capacity) {
+            currentLevel = capacity;
+        } else {
+            currentLevel += liters;
+        }
+        JOptionPane.showMessageDialog(null, liters + " liters added. Current level: " + currentLevel + "/" + capacity);
+    }
+
+    @Override
+    public void useWater(int liters) {
+        if (currentLevel - liters <= 0) {
+            currentLevel = 0;
+        } else {
+            currentLevel -= liters;
+        }
+        JOptionPane.showMessageDialog(null, liters + " liters used. Current level: " + currentLevel + "/" + capacity);
+    }
+
+    @Override
+    public String checkStatus() {
+        if (currentLevel == 0) return "Empty";
+        else if (currentLevel == capacity) return "Full";
+        else return "In Use";
+    }
+}
+
+// Main class
+public class WaterTankProgram {
+    public static void main(String[] args) {
+        WaterTank tank;
+
+        String choice = JOptionPane.showInputDialog("Enter type of tank:\n(1) HomeTank (200L)\n(2) BuildingTank (1000L)");
+
+        if (choice.equals("1")) {
+            tank = new HomeTank();
+        } else if (choice.equals("2")) {
+            tank = new BuildingTank();
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid choice. Program will exit.");
+            return;
+        }
+
+        while (true) {
+            String[] options = {"Fill Tank", "Use Water", "Check Status", "Exit"};
+            int action = JOptionPane.showOptionDialog(null, "Choose an action", "Water Tank Menu",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+            switch (action) {
+                case 0: // Fill Tank
+                    String fillInput = JOptionPane.showInputDialog("Enter liters to fill:");
+                    int fillLiters = Integer.parseInt(fillInput);
+                    tank.fillTank(fillLiters);
+                    break;
+
+                case 1: // Use Water
+                    String useInput = JOptionPane.showInputDialog("Enter liters to use:");
+                    int useLiters = Integer.parseInt(useInput);
+                    tank.useWater(useLiters);
+                    break;
+
+                case 2: // Check Status
+                    String status = tank.checkStatus();
+                    JOptionPane.showMessageDialog(null, "Tank is " + status + ".");
+                    break;
+
+                default: // Exit or window closed
+                    return;
+            }
+
+            String status = tank.checkStatus();
+            if (status.equals("Full")) {
+                JOptionPane.showMessageDialog(null, "Tank is Full! Program ended.");
+                break;
+            } else if (status.equals("Empty")) {
+                JOptionPane.showMessageDialog(null, "Tank is Empty! Program ended.");
+                break;
+            }
+        }
+    }
+}
